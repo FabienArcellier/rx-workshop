@@ -23,11 +23,7 @@ namespace IntroductionToRx
         {
             get
             {
-                // TODO: Remove the following code and add your code here.
-                // HINT: Try creating a new type that implements IObservable<int>
-                //       and takes textChanged in the constructor.
-
-                return Observable.Never<int>();
+                return textChanged.Select(s=>s.Length);
             }
         }
     }
