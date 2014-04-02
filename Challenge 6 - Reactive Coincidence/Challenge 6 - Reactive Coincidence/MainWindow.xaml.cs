@@ -36,7 +36,11 @@ namespace ReactiveCoincidence
             // HINT: There are many ways to do this. Try to use the concepts of events with duration and aggregate
             //       to see one way to solve this problem.  Also don't forget the Subtract method given below.
 
-            var query = Observable.Never<Point>();
+            var query = Observable.Join(mouseDown, 
+                mouseMove.Buffer(2), 
+                l => mouseUp,
+                r => Observable.Empty<Point>(), 
+                (l, r) => Subtract(r.Last(), r.First()));
 
             query.Subscribe(delta =>
             {
