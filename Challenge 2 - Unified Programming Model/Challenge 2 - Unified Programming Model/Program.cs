@@ -4,6 +4,7 @@ using System.Reactive.Linq;
 using System.Windows.Forms;
 using System.Reactive;
 using UnifiedProgrammingModel.DictionaryService;
+using System.Reactive.Concurrency;
 
 namespace UnifiedProgrammingModel
 {
@@ -17,17 +18,18 @@ namespace UnifiedProgrammingModel
 
             // TODO: Convert txt.TextChanged to IObservable<EventPattern<EventArgs>> and assign it to textChanged.
             // HINT: Try using FromEventPattern.
-            var textChanged = Observable.Never<EventPattern<EventArgs>>();
+            var textChanged = Observable.FromEventPattern(txt, "TextChanged");
 
             // TODO: Convert BeginMatch/EndMatch to Func<string, IObservable<DictionaryWord[]>> and assign it to getSuggestions.
             // HINT: Try using FromAsyncPattern
-            var getSuggestions = new Func<string, IObservable<DictionaryWord[]>>(s => Observable.Never<DictionaryWord[]>());
+            var getSuggestions = Observable.FromAsyncPattern<string, DictionaryWord[]>(BeginMatch, EndMatch);
 
-            var results = from _ in textChanged
-                          let text = txt.Text
-                          where text.Length >= 3
-                          from suggestions in getSuggestions(text)
-                          select suggestions;
+            var results = textChanged
+                .ObserveOn(Scheduler.ThreadPool)
+                .Select(e =>((TextBox)e.Sender).Text)
+                .Where(t => t.Length > 3)
+                .Select(t => getSuggestions(t))
+                .Switch();
 
             using (results
                 .ObserveOn(lst)
