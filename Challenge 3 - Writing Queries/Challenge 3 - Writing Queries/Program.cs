@@ -19,22 +19,20 @@ namespace WritingQueries
                     
             var getSuggestions = Observable.FromAsyncPattern<string, DictionaryWord[]>(BeginMatch, EndMatch);
 
-            // TODO: Call additional query operators to avoid looking up suggestions for the same text twice in a row
-            //       and waiting to look up suggestions until the user pauses at least 200 ms.
-            // HINT: Try using DistinctUntilChanged and Throttle.
-
             var lookup = textChanged
-                            .Select(_ => txt.Text)
-                            .Do(text => Console.WriteLine("TextChanged: {0}", text))
-                            .Where(text => text.Length >= 3)
-                            .Do(text => Console.WriteLine("Lookup: {0}", text));
+                .Select(_ => txt.Text)
+                .Do(text => Console.WriteLine("TextChanged: {0}", text))
+                .Where(text => text.Length >= 3)
+                .DistinctUntilChanged()
+                .Throttle(TimeSpan.FromMilliseconds(200))
+                .Do(text => Console.WriteLine("Lookup: {0}", text));
 
 
             // TODO: Eliminate the race condition caused by out-of-order arrivals.
             // HINT: Try using Switch.
             var results = lookup
                           .Select(text => getSuggestions(text))
-                          .Merge();
+                          .Switch();
 
             using (results
                 .ObserveOn(lst)
