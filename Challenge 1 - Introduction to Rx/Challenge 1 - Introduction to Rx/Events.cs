@@ -8,23 +8,27 @@ namespace IntroductionToRx
     class Events
     {
         public event Action<string> TextChanged;
+        private event Action<int> _myLengthChanged;
 
         public virtual void OnTextChanged(string text)
         {
             var t = TextChanged;
             if (t != null)
                 t(text);
+
+            if (_myLengthChanged != null)
+                _myLengthChanged(text.Length);
         }
 
         public event Action<int> LengthChanged
         {
             add
             {
-                // TODO: Code to add a handler
+                _myLengthChanged += value;
             }
             remove
             {
-                // TODO: Code to remove a handler
+                _myLengthChanged -= value;
             }
         }
     }

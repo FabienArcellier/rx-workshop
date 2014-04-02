@@ -28,20 +28,20 @@ namespace IntroductionToRx
             // 13
 
 
-            //Console.WriteLine("*** Events ***");
-            //var events = new Events();
-            //Action<string> textHandler = text => Console.WriteLine(text);
-            //Action<int> lengthHandler = length => Console.WriteLine(length);
-            //events.TextChanged += textHandler;
-            //events.OnTextChanged("The");
-            //events.OnTextChanged("Reactive");
-            //events.LengthChanged += lengthHandler;
-            //events.OnTextChanged("Extensions");
-            //events.OnTextChanged("are");
-            //events.TextChanged -= textHandler;
-            //events.OnTextChanged("compositional");
-            //events.LengthChanged -= lengthHandler;
-            //events.OnTextChanged("!");
+            Console.WriteLine("*** Events ***");
+            var events = new Events();
+            Action<string> textHandler = text => Console.WriteLine(text);
+            Action<int> lengthHandler = length => Console.WriteLine(length);
+            events.TextChanged += textHandler;
+            events.OnTextChanged("The");
+            events.OnTextChanged("Reactive");
+            events.LengthChanged += lengthHandler;
+            events.OnTextChanged("Extensions");
+            events.OnTextChanged("are");
+            events.TextChanged -= textHandler;
+            events.OnTextChanged("compositional");
+            events.LengthChanged -= lengthHandler;
+            events.OnTextChanged("!");
 
             Console.WriteLine("*** Observables ***");
             var observables = new Observables();
